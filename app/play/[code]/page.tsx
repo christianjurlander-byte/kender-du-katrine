@@ -14,6 +14,8 @@ import { LobbyCountdown } from "@/components/LobbyCountdown";
 import { TeaserGallery } from "@/components/TeaserGallery";
 import { LobbyVibeMessage } from "@/components/LobbyVibeMessage";
 import { useLobbyVibe } from "@/hooks/useLobbyVibe";
+import { RoundVibeMessage } from "@/components/RoundVibeMessage";
+import { useRoundVibe } from "@/hooks/useRoundVibe";
 import { Badge18 } from "@/components/Badge18";
 
 export default function PlayPage() {
@@ -31,6 +33,7 @@ export default function PlayPage() {
 
   const { state, loading, error } = useGameRealtime(code);
   const lobbyVibe = useLobbyVibe(code, state?.game.status === "lobby");
+  const roundVibe = useRoundVibe(code, state?.currentQuestion?.id, state?.game.question_state === "revealed");
 
   // Reset local answer state whenever the current question changes, using
   // the React-recommended "adjust state while rendering" pattern instead of
@@ -189,6 +192,7 @@ export default function PlayPage() {
                 correctOptionIndex={state.roundResult.correctOptionIndex}
                 selectedOptionIndex={selectedOption}
               />
+              <RoundVibeMessage message={roundVibe} />
               <div>
                 <p className="font-bold mb-2">Stillingen</p>
                 <Leaderboard players={state.players} highlightPlayerId={myPlayer?.id} />

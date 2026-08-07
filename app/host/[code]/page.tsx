@@ -17,6 +17,8 @@ import { Confetti } from "@/components/Confetti";
 import { CopyLinkButton } from "@/components/CopyLinkButton";
 import { LobbySettingsPanel } from "@/components/LobbySettingsPanel";
 import { Badge18 } from "@/components/Badge18";
+import { RoundVibeMessage } from "@/components/RoundVibeMessage";
+import { useRoundVibe } from "@/hooks/useRoundVibe";
 import { playTadaChime } from "@/lib/sound";
 
 export default function HostGamePage() {
@@ -31,6 +33,7 @@ export default function HostGamePage() {
   const [questions, setQuestions] = useState<EditableQuestion[]>([]);
 
   const { state, loading, error } = useGameRealtime(code);
+  const roundVibe = useRoundVibe(code, state?.currentQuestion?.id, state?.game.question_state === "revealed");
 
   useEffect(() => {
     // Reading localStorage is a sync with an external system that only
@@ -113,6 +116,7 @@ export default function HostGamePage() {
       totalQuestions={totalQuestions}
       katrineChosen={katrineChosen}
       revealed={revealed}
+      roundVibe={roundVibe}
       busy={busy}
       actionError={actionError}
       runAction={runAction}
@@ -137,6 +141,7 @@ interface HostGameViewProps {
   totalQuestions: number;
   katrineChosen: boolean;
   revealed: boolean;
+  roundVibe: string | null;
   busy: boolean;
   actionError: string | null;
   runAction: (fn: () => Promise<unknown>) => Promise<void>;
@@ -159,6 +164,7 @@ function HostGameView({
   totalQuestions,
   katrineChosen,
   revealed,
+  roundVibe,
   busy,
   actionError,
   runAction,
@@ -282,6 +288,7 @@ function HostGameView({
                 distribution={roundResult.distribution}
                 correctOptionIndex={roundResult.correctOptionIndex}
               />
+              <RoundVibeMessage message={roundVibe} />
               <div>
                 <p className="font-bold mb-2">Stillingen</p>
                 <Leaderboard players={players} />

@@ -15,6 +15,8 @@ import { LobbyCountdown } from "@/components/LobbyCountdown";
 import { TeaserGallery } from "@/components/TeaserGallery";
 import { LobbyVibeMessage } from "@/components/LobbyVibeMessage";
 import { useLobbyVibe } from "@/hooks/useLobbyVibe";
+import { RoundVibeMessage } from "@/components/RoundVibeMessage";
+import { useRoundVibe } from "@/hooks/useRoundVibe";
 import { Badge18 } from "@/components/Badge18";
 import { pickHighlightFacts } from "@/lib/insights";
 import { playTadaChime } from "@/lib/sound";
@@ -42,6 +44,7 @@ export default function SharedScreenPage() {
     : "";
   const { insights, awards } = useInsights(code, refreshKey);
   const lobbyVibe = useLobbyVibe(code, state?.game.status === "lobby");
+  const roundVibe = useRoundVibe(code, state?.currentQuestion?.id, state?.game.question_state === "revealed");
 
   const revealed = !!state && state.game.question_state === "revealed" && !!state.currentQuestion;
 
@@ -160,6 +163,7 @@ export default function SharedScreenPage() {
                   ⚡ {playerNames[roundResult.fastestCorrectPlayerId] ?? "Nogen"} svarede hurtigst rigtigt!
                 </p>
               )}
+              <RoundVibeMessage message={roundVibe} large />
               {highlightFacts.map((fact) => (
                 <p key={fact} className="text-lg font-semibold">
                   {fact}
