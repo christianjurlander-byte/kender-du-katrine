@@ -14,6 +14,8 @@ import { ErrorBanner, GameCodeBadge, Spinner } from "@/components/Misc";
 import { QuestionEditor, type EditableQuestion } from "@/components/QuestionEditor";
 import { CountdownRing } from "@/components/CountdownRing";
 import { Confetti } from "@/components/Confetti";
+import { CopyLinkButton } from "@/components/CopyLinkButton";
+import { LobbySettingsPanel } from "@/components/LobbySettingsPanel";
 import { playTadaChime } from "@/lib/sound";
 
 export default function HostGamePage() {
@@ -180,13 +182,16 @@ function HostGameView({
         <p className="text-sm" style={{ color: "var(--muted)" }}>
           Spillerne skriver koden på kenderdukatrine.vercel.app/join
         </p>
-        <Link
-          href={`/host/${code}/screen`}
-          target="_blank"
-          className="btn btn-secondary !w-auto !min-h-0 !py-2 !px-4 !text-sm mx-auto mt-1"
-        >
-          📺 Åbn fælles skærm
-        </Link>
+        <div className="flex flex-wrap items-center justify-center gap-2 mt-1">
+          <Link
+            href={`/host/${code}/screen`}
+            target="_blank"
+            className="btn btn-secondary !w-auto !min-h-0 !py-2 !px-4 !text-sm"
+          >
+            📺 Åbn fælles skærm
+          </Link>
+          <CopyLinkButton code={code} />
+        </div>
       </header>
 
       {game.status === "lobby" && (
@@ -210,6 +215,13 @@ function HostGameView({
           <Button variant="secondary" onClick={openQuestionEditor}>
             ✏️ Rediger spørgsmål ({totalQuestions})
           </Button>
+
+          <LobbySettingsPanel
+            code={code}
+            hostToken={hostToken}
+            scheduledStartAt={game.scheduled_start_at}
+            teaserImageUrls={game.teaser_image_urls}
+          />
 
           <Button
             disabled={busy || !katrineChosen || players.length < 2}

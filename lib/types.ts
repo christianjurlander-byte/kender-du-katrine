@@ -11,6 +11,8 @@ export interface Game {
   host_token: string;
   created_at: string;
   question_started_at: string | null;
+  scheduled_start_at: string | null;
+  teaser_image_urls: string[];
 }
 
 export interface Player {

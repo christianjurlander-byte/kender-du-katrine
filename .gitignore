@@ -37,6 +37,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# personal test images — never commit real photos to the repo
+/test-images
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

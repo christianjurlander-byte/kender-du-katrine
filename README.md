@@ -139,6 +139,30 @@ refresh, og at kun værten kan starte/lukke/gå videre i spillet.
 
 ---
 
+## Valgfrit — AI-genereret sjovt indhold i lobbyen
+
+Uden noget ekstra opsætning viser lobbyen automatisk nogle faste, sjove
+beskeder, mens folk venter. Hvis du i stedet vil have **rigtige,
+AI-genererede** beskeder (nye hver gang), skal du oprette en gratis konto
+hos Anthropic og hente en nøgle — det koster typisk under en krone for en
+hel fest.
+
+1. Gå til [console.anthropic.com](https://console.anthropic.com) og opret en konto
+2. Læg et lille beløb ind under **"Billing"** (fx $5 er rigeligt)
+3. Gå til **"API Keys"** i venstremenuen, klik **"Create Key"**, og kopiér nøglen
+   (den starter med `sk-ant-...` — du kan kun se den én gang, så gem den et
+   sikkert sted)
+4. Åbn `.env.local` og indsæt den:
+   ```bash
+   ANTHROPIC_API_KEY=sk-ant-din-nøgle-her
+   ```
+5. Genstart `npm run dev`
+
+Hvis du springer dette over, virker alt stadig — lobbyen bruger bare de
+faste beskeder i stedet.
+
+---
+
 ## Trin 4 — Læg appen ud på nettet med Vercel
 
 1. Læg koden i et GitHub-repository (hvis du ikke allerede har gjort det):
@@ -152,11 +176,12 @@ refresh, og at kun værten kan starte/lukke/gå videre i spillet.
 2. Gå til [vercel.com](https://vercel.com), opret en gratis konto (du kan
    logge ind med din GitHub-konto), og klik **"Add New..." → "Project"**.
 3. Vælg dit GitHub-repository og klik **"Import"**.
-4. Under **"Environment Variables"**, tilføj de samme tre værdier som i
+4. Under **"Environment Variables"**, tilføj de samme værdier som i
    `.env.local`:
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    - `SUPABASE_SERVICE_ROLE_KEY`
+   - `ANTHROPIC_API_KEY` (kun hvis du har sat AI-lobbybeskeder op — se ovenfor)
 5. Klik **"Deploy"**. Efter 1-2 minutter får du et link, fx
    `https://kender-du-katrine.vercel.app` — del det med dine gæster.
 

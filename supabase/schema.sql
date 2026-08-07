@@ -26,10 +26,18 @@ create table if not exists public.games (
   created_at timestamptz not null default now(),
   -- When the current question was opened for answering. Used to compute
   -- the (purely visual) countdown ring and "fastest answer" fun facts.
-  question_started_at timestamptz
+  question_started_at timestamptz,
+  -- Optional hype-building target time shown as a countdown in the lobby
+  -- (e.g. "quiz starts tomorrow at 19:00"). Purely informational — the
+  -- host still has to press "Start spil" manually when ready.
+  scheduled_start_at timestamptz,
+  -- Optional teaser photos of Katrine shown while people wait in the lobby.
+  teaser_image_urls jsonb not null default '[]'::jsonb
 );
 
 alter table public.games add column if not exists question_started_at timestamptz;
+alter table public.games add column if not exists scheduled_start_at timestamptz;
+alter table public.games add column if not exists teaser_image_urls jsonb not null default '[]'::jsonb;
 
 create table if not exists public.players (
   id uuid primary key default gen_random_uuid(),

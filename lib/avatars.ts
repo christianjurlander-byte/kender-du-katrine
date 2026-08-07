@@ -1,8 +1,10 @@
 /** A curated, party-friendly set of emoji players can pick as their avatar. */
 export const AVATAR_OPTIONS = [
-  "😎", "🥳", "🤩", "😂", "🙈", "🦄", "🐸", "🐵",
-  "🦊", "🐼", "🐯", "🦁", "🐶", "🐱", "🐧", "🦩",
-  "🍕", "🍩", "🍦", "🌮", "🎉", "🔥", "⭐", "👑",
+  "😎", "🥳", "🤩", "😂", "🤪", "🙈", "😜", "🤓",
+  "👻", "🤡", "👽", "🦄", "🐸", "🐵", "🦊", "🐼",
+  "🐯", "🦁", "🐶", "🐱", "🐨", "🐷", "🐔", "🦩",
+  "🐢", "🦖", "🐙", "🦈", "🍕", "🍩", "🍦", "🌮",
+  "🍔", "🍿", "🥑", "🎉", "🔥", "⭐", "👑", "🚀",
 ] as const;
 
 export function isValidAvatar(value: unknown): value is string {

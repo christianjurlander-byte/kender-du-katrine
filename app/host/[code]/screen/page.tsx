@@ -11,6 +11,10 @@ import { AnsweredGrid } from "@/components/AnsweredGrid";
 import { DistributionChart } from "@/components/DistributionChart";
 import { Leaderboard } from "@/components/Leaderboard";
 import { GameCodeBadge, ErrorBanner, Spinner } from "@/components/Misc";
+import { LobbyCountdown } from "@/components/LobbyCountdown";
+import { TeaserGallery } from "@/components/TeaserGallery";
+import { LobbyVibeMessage } from "@/components/LobbyVibeMessage";
+import { useLobbyVibe } from "@/hooks/useLobbyVibe";
 import { pickHighlightFacts } from "@/lib/insights";
 import { playTadaChime } from "@/lib/sound";
 
@@ -36,6 +40,7 @@ export default function SharedScreenPage() {
     ? `${state.game.question_state}-${state.game.current_question_index}-${state.game.status}`
     : "";
   const { insights, awards } = useInsights(code, refreshKey);
+  const lobbyVibe = useLobbyVibe(code, state?.game.status === "lobby");
 
   const revealed = !!state && state.game.question_state === "revealed" && !!state.currentQuestion;
 
@@ -81,6 +86,9 @@ export default function SharedScreenPage() {
             </div>
           </div>
 
+          {game.scheduled_start_at && <LobbyCountdown targetIso={game.scheduled_start_at} big />}
+          {game.teaser_image_urls.length > 0 && <TeaserGallery images={game.teaser_image_urls} />}
+
           <div>
             <p className="text-lg font-bold mb-3" style={{ color: "var(--muted)" }}>
               {players.length} {players.length === 1 ? "spiller er" : "spillere er"} med
@@ -107,6 +115,8 @@ export default function SharedScreenPage() {
               ))}
             </div>
           </div>
+
+          <LobbyVibeMessage message={lobbyVibe} />
         </div>
       )}
 

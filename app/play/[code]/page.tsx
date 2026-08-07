@@ -10,6 +10,10 @@ import { Leaderboard } from "@/components/Leaderboard";
 import { PlayerList } from "@/components/PlayerList";
 import { ErrorBanner, GameCodeBadge, Spinner } from "@/components/Misc";
 import { CountdownRing } from "@/components/CountdownRing";
+import { LobbyCountdown } from "@/components/LobbyCountdown";
+import { TeaserGallery } from "@/components/TeaserGallery";
+import { LobbyVibeMessage } from "@/components/LobbyVibeMessage";
+import { useLobbyVibe } from "@/hooks/useLobbyVibe";
 
 export default function PlayPage() {
   const params = useParams<{ code: string }>();
@@ -25,6 +29,7 @@ export default function PlayPage() {
   const [answeredQuestionId, setAnsweredQuestionId] = useState<string | null | undefined>(undefined);
 
   const { state, loading, error } = useGameRealtime(code);
+  const lobbyVibe = useLobbyVibe(code, state?.game.status === "lobby");
 
   // Reset local answer state whenever the current question changes, using
   // the React-recommended "adjust state while rendering" pattern instead of
@@ -124,6 +129,15 @@ export default function PlayPage() {
           <div className="card text-center">
             <p className="font-semibold">Venter på at værten starter spillet...</p>
           </div>
+          {state.game.scheduled_start_at && (
+            <div className="card">
+              <LobbyCountdown targetIso={state.game.scheduled_start_at} big />
+            </div>
+          )}
+          {state.game.teaser_image_urls.length > 0 && (
+            <TeaserGallery images={state.game.teaser_image_urls} />
+          )}
+          <LobbyVibeMessage message={lobbyVibe} />
           <PlayerList players={state.players} />
         </div>
       )}
