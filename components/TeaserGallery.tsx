@@ -7,8 +7,13 @@ interface TeaserGalleryProps {
   intervalMs?: number;
 }
 
-/** Slowly rotates through teaser photos while people wait in the lobby. */
-export function TeaserGallery({ images, intervalMs = 7000 }: TeaserGalleryProps) {
+const FIVE_MINUTES_MS = 5 * 60 * 1000;
+
+/**
+ * Slowly rotates through teaser photos while people wait in the lobby.
+ * Same pace as the AI lobby message, so the two don't compete for attention.
+ */
+export function TeaserGallery({ images, intervalMs = FIVE_MINUTES_MS }: TeaserGalleryProps) {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
