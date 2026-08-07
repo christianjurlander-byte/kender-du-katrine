@@ -4,7 +4,7 @@ import { generateGameCode } from "@/lib/gameCode";
 import { DEFAULT_QUESTIONS } from "@/lib/defaultQuestions";
 import { jsonError, withApiErrorHandling } from "@/lib/apiHelpers";
 
-/** Creates a new game with a unique 4-digit code and 10 default questions. */
+/** Creates a new game with a unique 4-digit code and the default questions. */
 async function handlePost() {
   const supabase = getSupabaseServerClient();
 

@@ -4,7 +4,7 @@ export interface DefaultQuestion {
 }
 
 /**
- * 10 default spørgsmål, klar til brug — værten kan redigere dem alle
+ * 16 default spørgsmål, klar til brug. Værten kan redigere dem alle
  * (tekst og svarmuligheder) i lobbyen inden spillet starter.
  */
 export const DEFAULT_QUESTIONS: DefaultQuestion[] = [
@@ -47,5 +47,34 @@ export const DEFAULT_QUESTIONS: DefaultQuestion[] = [
   {
     text: "Hvilken drink vælger Katrine til en fest?",
     options: ["Gin & tonic", "Rødvin", "Øl", "Sodavand"],
+  },
+  {
+    text: "Hvilken sport gik Katrine til som barn, og var god til?",
+    options: ["Svømning", "Gymnastik", "Fodbold", "Ballet"],
+  },
+  {
+    text: "Hvad gør Katrine, når hun skal slappe af?",
+    options: ["Spiller guitar", "Maler", "Løber", "Mediterer"],
+  },
+  {
+    text: "Hvem tager Katrine oftest med på skiferie?",
+    options: ["Ellen", "Laurids", "Sin mor", "Hele vennegruppen"],
+  },
+  {
+    text: "Hvad foretrækker Katrine på pistesne?",
+    options: ["Snowboard", "Ski", "Slæde", "Skihytten med kakao"],
+  },
+  {
+    text: "Hvilken tid ville Katrine bedst kunne tænke sig at have levet i?",
+    options: ["En tid uden smartphones", "Middelalderen", "1920'erne", "Fremtiden om 100 år"],
+  },
+  {
+    text: "Hvad er Katrines bedste koncert-souvenir?",
+    options: [
+      "En plekter fra Minds of 99-guitaristen",
+      "En signeret t-shirt",
+      "Et sætlist fra scenen",
+      "Et billede med bandet",
+    ],
   },
 ];

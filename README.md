@@ -16,14 +16,14 @@ punkterne i rækkefølge.
 1. Værten opretter et spil og får en 4-cifret kode.
 2. Spillerne åbner siden på deres telefon, indtaster koden og deres navn.
 3. Værten vælger hvem af spillerne der er "Katrine".
-4. Værten starter spørgsmål 1. Alle — også Katrine — svarer hemmeligt.
+4. Værten starter spørgsmål 1. Alle, også Katrine, svarer hemmeligt.
    Ingen kan se andres svar endnu.
 5. Værten lukker afstemningen. Katrines svar bliver det "rigtige" svar.
    Alle andre, der svarede det samme som hende, får 1 point. Katrine får
    aldrig point selv.
 6. Svarfordelingen og stillingen vises for alle.
-7. Værten går videre til næste spørgsmål — kun værten kan gøre dette.
-8. Efter 10 spørgsmål vises den endelige stilling.
+7. Værten går videre til næste spørgsmål, kun værten kan gøre dette.
+8. Efter alle spørgsmål er stillet, vises den endelige stilling.
 
 Hvis en spiller (eller værten) opdaterer siden eller mister forbindelsen,
 kan de bare åbne linket igen — de bliver automatisk genkendt og kommer
@@ -195,13 +195,12 @@ Vercel bygger og udgiver automatisk den nye version.
 1. Værten åbner appen på sin telefon/laptop og klikker "Vær vært for et
    spil" for at få en 4-cifret kode.
 2. Værten viser koden frem (højt op, eller del den i en besked).
-3. Alle gæster — inklusive Katrine — går ind på siden, klikker "Deltag i et
+3. Alle gæster, inklusive Katrine, går ind på siden, klikker "Deltag i et
    spil", og indtaster koden og deres navn.
 4. Værten vælger i lobbyen, hvem der er Katrine, og kan om ønsket redigere
-   de 10 spørgsmål (tryk "Rediger spørgsmål").
-5. Værten trykker "Start spil" og styrer resten af aftenen — luk afstemning
-   → se resultatet → næste spørgsmål, indtil alle 10 spørgsmål er
-   gennemgået.
+   spørgsmålene (tryk "Rediger spørgsmål").
+5. Værten trykker "Start spil" og styrer resten af aftenen: luk afstemning,
+   se resultatet, næste spørgsmål, indtil alle spørgsmål er gennemgået.
 
 ---
 
