@@ -3,15 +3,17 @@ import type { PublicPlayer } from "@/lib/types";
 interface LeaderboardProps {
   players: PublicPlayer[];
   highlightPlayerId?: string | null;
+  /** Splits the list into 2 columns — handy on the shared screen with many players. */
+  columns?: 1 | 2;
 }
 
-export function Leaderboard({ players, highlightPlayerId }: LeaderboardProps) {
+export function Leaderboard({ players, highlightPlayerId, columns = 1 }: LeaderboardProps) {
   const sorted = [...players]
     .filter((p) => !p.is_katrine)
     .sort((a, b) => b.score - a.score);
 
   return (
-    <div className="flex flex-col gap-2 w-full">
+    <div className={columns === 2 ? "grid grid-cols-2 gap-2 w-full" : "flex flex-col gap-2 w-full"}>
       {sorted.map((player, i) => (
         <div
           key={player.id}

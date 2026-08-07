@@ -152,26 +152,28 @@ export default function SharedScreenPage() {
           )}
 
           {game.question_state === "revealed" && roundResult && (
-            <div className="flex flex-col items-center gap-6 w-full max-w-2xl">
-              <DistributionChart
-                options={currentQuestion.options}
-                distribution={roundResult.distribution}
-                correctOptionIndex={roundResult.correctOptionIndex}
-              />
-              {roundResult.fastestCorrectPlayerId && (
-                <p className="text-lg font-bold" style={{ color: "var(--party-purple)" }}>
-                  ⚡ {playerNames[roundResult.fastestCorrectPlayerId] ?? "Nogen"} svarede hurtigst rigtigt!
-                </p>
-              )}
-              <RoundVibeMessage message={roundVibe} large />
-              {highlightFacts.map((fact) => (
-                <p key={fact} className="text-lg font-semibold">
-                  {fact}
-                </p>
-              ))}
-              <div className="w-full max-w-md">
+            <div className="w-full grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-8 items-start">
+              <div className="flex flex-col items-center gap-5 w-full">
+                <DistributionChart
+                  options={currentQuestion.options}
+                  distribution={roundResult.distribution}
+                  correctOptionIndex={roundResult.correctOptionIndex}
+                />
+                {roundResult.fastestCorrectPlayerId && (
+                  <p className="text-lg font-bold" style={{ color: "var(--party-purple)" }}>
+                    ⚡ {playerNames[roundResult.fastestCorrectPlayerId] ?? "Nogen"} svarede hurtigst rigtigt!
+                  </p>
+                )}
+                <RoundVibeMessage message={roundVibe} large />
+                {highlightFacts.map((fact) => (
+                  <p key={fact} className="text-lg font-semibold">
+                    {fact}
+                  </p>
+                ))}
+              </div>
+              <div className="w-full">
                 <p className="text-xl font-bold mb-2">Stillingen</p>
-                <Leaderboard players={players} />
+                <Leaderboard players={players} columns={players.length > 10 ? 2 : 1} />
               </div>
             </div>
           )}
@@ -179,10 +181,10 @@ export default function SharedScreenPage() {
       )}
 
       {game.status === "finished" && (
-        <div className="flex flex-col items-center gap-6 w-full max-w-2xl">
+        <div className="flex flex-col items-center gap-6 w-full max-w-3xl">
           <span className="text-6xl">🏆</span>
           <h1 className="text-4xl font-black">Spillet er slut!</h1>
-          <Leaderboard players={players} />
+          <Leaderboard players={players} columns={players.length > 10 ? 2 : 1} />
 
           {awards && awards.length > 0 && (
             <div className="w-full flex flex-col gap-3 mt-2">
