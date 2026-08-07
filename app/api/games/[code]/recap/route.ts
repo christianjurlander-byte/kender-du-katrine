@@ -76,7 +76,7 @@ async function handleGet(
     const client = new Anthropic({ apiKey });
     const response = await client.messages.create({
       model: "claude-opus-5",
-      max_tokens: 300,
+      max_tokens: 600,
       output_config: { effort: "low" },
       messages: [{ role: "user", content: buildKatrineRecapPrompt(input) }],
     });
@@ -88,7 +88,9 @@ async function handleGet(
     const textBlock = response.content.find((block) => block.type === "text");
     const message = textBlock?.type === "text" ? textBlock.text.trim() : "";
 
-    if (!message) {
+    // A max_tokens cutoff means the text was cut off mid-sentence, which
+    // reads worse than the fallback, so treat it the same as a failure.
+    if (!message || response.stop_reason === "max_tokens") {
       return NextResponse.json({ message: pickRecapFallback(input), source: "fallback" });
     }
 

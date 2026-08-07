@@ -104,7 +104,7 @@ async function handleGet(
     const textBlock = response.content.find((block) => block.type === "text");
     const message = textBlock?.type === "text" ? textBlock.text.trim() : "";
 
-    if (!message) {
+    if (!message || response.stop_reason === "max_tokens") {
       return NextResponse.json({ message: pickRoundFallback(input), source: "fallback" });
     }
 
