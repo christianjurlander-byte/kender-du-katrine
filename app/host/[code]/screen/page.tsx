@@ -72,7 +72,7 @@ export default function SharedScreenPage() {
   const katrineName = players.find((p) => p.is_katrine)?.name;
 
   return (
-    <main className="flex-1 flex flex-col items-center justify-center gap-8 px-10 py-10 w-full max-w-5xl mx-auto text-center">
+    <main className="flex-1 flex flex-col items-center justify-center gap-8 px-10 py-8 w-full max-w-6xl mx-auto text-center">
       {game.status === "lobby" && (
         <div className="flex flex-col items-center gap-8 w-full">
           <div className="flex flex-col items-center gap-3">
@@ -185,27 +185,39 @@ export default function SharedScreenPage() {
       )}
 
       {game.status === "finished" && (
-        <div className="flex flex-col items-center gap-6 w-full max-w-3xl">
-          <span className="text-6xl">🎂</span>
-          <h1 className="text-4xl font-black">Tillykke med de 18 år, {katrineName ?? "Katrine"}!</h1>
-          <KatrineRecapCard message={katrineRecap} katrineName={katrineName} large />
-          <h2 className="text-2xl font-black mt-2">🏆 Stillingen</h2>
-          <Leaderboard players={players} columns={players.length > 10 ? 2 : 1} />
+        <div className="flex flex-col items-center gap-4 w-full max-w-6xl">
+          <div className="flex flex-col items-center gap-1">
+            <span className="text-4xl">🎂</span>
+            <h1 className="text-3xl font-black text-center">
+              Tillykke med de 18 år, {katrineName ?? "Katrine"}!
+            </h1>
+          </div>
 
-          {awards && awards.length > 0 && (
-            <div className="w-full flex flex-col gap-3 mt-2">
-              <p className="text-xl font-bold">Aftenens priser</p>
-              {awards.map((award) => (
-                <div key={award.title} className="card !p-4 flex items-center gap-3">
-                  <span className="text-3xl">{award.emoji}</span>
-                  <div className="text-left">
-                    <p className="font-bold">{award.title}</p>
-                    <p style={{ color: "var(--muted)" }}>{award.playerName}</p>
-                  </div>
-                </div>
-              ))}
+          <div className="w-full grid grid-cols-1 lg:grid-cols-[1.3fr_1fr_1fr] gap-6 items-start">
+            <KatrineRecapCard message={katrineRecap} katrineName={katrineName} />
+
+            <div className="w-full">
+              <p className="text-lg font-bold mb-2">🏆 Stillingen</p>
+              <Leaderboard players={players} columns={players.length > 6 ? 2 : 1} />
             </div>
-          )}
+
+            {awards && awards.length > 0 && (
+              <div className="w-full flex flex-col gap-2">
+                <p className="text-lg font-bold">Aftenens priser</p>
+                {awards.map((award) => (
+                  <div key={award.title} className="card !p-3 flex items-center gap-2">
+                    <span className="text-2xl">{award.emoji}</span>
+                    <div className="text-left">
+                      <p className="font-bold text-sm">{award.title}</p>
+                      <p className="text-sm" style={{ color: "var(--muted)" }}>
+                        {award.playerName}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       )}
 

@@ -38,8 +38,9 @@ export function buildLobbyVibePrompt(katrineFacts?: string): string {
 
 Regler:
 - Maks 1-2 korte sætninger.
-- Legende, varm og opstemt tone — som en hyggelig værtinde, ikke en reklame.
+- Legende, varm og opstemt tone, som en hyggelig værtinde, ikke en reklame.
 - Må gerne nævne Katrine, fødselsdagen, ventetiden, eller stemningen til festen.
 - Ingen emojis er påkrævet, men du må gerne bruge 1 hvis det passer naturligt.
+- Skriv i almindeligt prosasprog uden tankestreger.
 - Svar KUN med selve sætningen, ingen anførselstegn, ingen forklaring.${factsBlock}`;
 }

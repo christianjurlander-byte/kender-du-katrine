@@ -90,7 +90,8 @@ Skriv ÉN sjov, kort kommentar på dansk til at vise på skærmen, mens alle ven
 
 Regler:
 - Maks 2-3 korte sætninger.
-- Varm, godmodig drilleri — aldrig ondskabsfuldt eller sårende.
+- Varm, godmodig drilleri, aldrig ondskabsfuldt eller sårende.
 - Du må gerne bruge spillernes avatar-emoji i teksten.
+- Skriv i almindeligt prosasprog uden tankestreger.
 - Svar KUN med selve kommentaren, ingen anførselstegn, ingen forklaring.`;
 }
