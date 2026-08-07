@@ -21,15 +21,15 @@ export function TeaserGallery({ images, intervalMs = 7000 }: TeaserGalleryProps)
 
   return (
     <div
-      className="rounded-2xl overflow-hidden mx-auto"
-      style={{ maxWidth: 360, aspectRatio: "4 / 3" }}
+      className="rounded-2xl overflow-hidden mx-auto flex items-center justify-center"
+      style={{ maxWidth: 360, maxHeight: 480, background: "var(--card-border)" }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         key={images[index]}
         src={images[index]}
         alt="Teaser-billede af Katrine"
-        className="w-full h-full object-cover"
+        className="max-w-full max-h-full w-auto h-auto object-contain"
         style={{ animation: "fadeIn 0.4s ease" }}
       />
     </div>
