@@ -8,7 +8,7 @@ interface TeaserGalleryProps {
 }
 
 /** Slowly rotates through teaser photos while people wait in the lobby. */
-export function TeaserGallery({ images, intervalMs = 4000 }: TeaserGalleryProps) {
+export function TeaserGallery({ images, intervalMs = 7000 }: TeaserGalleryProps) {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
