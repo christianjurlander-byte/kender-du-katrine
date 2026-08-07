@@ -29,6 +29,17 @@ Hvis en spiller (eller værten) opdaterer siden eller mister forbindelsen,
 kan de bare åbne linket igen — de bliver automatisk genkendt og kommer
 tilbage til spillet, hvor de var.
 
+### Fælles skærm (til TV'et)
+
+Fra værtens side kan du trykke **"📺 Åbn fælles skærm"** — det åbner en
+separat, rent visuel side (`/host/<kode>/screen`) uden knapper, lavet til
+at blive vist på et TV. Send den til fjernsynet med AirPlay (fra en
+iPhone/iPad/Mac til et AppleTV) eller ved at slutte en iPad til TV'et med
+et HDMI-kabel — begge dele er almindelig skærmspejling og kræver intet
+ekstra fra appen. Den fælles skærm viser QR-kode til at deltage, hvem der
+har svaret, svarfordeling, "fun facts" om streaks/hurtigste svar, samt
+priser til allersidst.
+
 ---
 
 ## Hvad du skal bruge
@@ -188,7 +199,11 @@ Vercel bygger og udgiver automatisk den nye version.
   er dækket af `tests/scoring.test.ts`.
 - **Tests**: `tests/scoring.test.ts` (pointberegning), `tests/reconnect.test.ts`
   (genopret forbindelse), `tests/hostControls.test.ts` (kun værten kan
-  styre spillet, korrekte tilstandsovergange).
+  styre spillet, korrekte tilstandsovergange), `tests/insights.test.ts`
+  (streaks, hurtigste-svar og aftenens priser).
+- **Billeder**: uploades via `app/api/games/[code]/upload-image` til en
+  offentlig Supabase Storage-bøtte ("question-images"), oprettet af
+  `supabase/schema.sql`.
 
 ## Fejlfinding
 
@@ -200,3 +215,6 @@ Vercel bygger og udgiver automatisk den nye version.
 - **"Kun værten kan gøre dette"** — du prøver at styre spillet fra en
   browser, der ikke oprettede det. Åbn spillet i den browser/fane, hvor du
   trykkede "Opret nyt spil".
+- **Har du opdateret appen med nye funktioner (billeder, avatarer, m.m.)?**
+  Kør `supabase/schema.sql` igen i Supabase SQL Editor — filen er lavet til
+  trygt at kunne køres igen og igen, og tilføjer kun det nye.

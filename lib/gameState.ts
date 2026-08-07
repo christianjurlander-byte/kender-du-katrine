@@ -3,9 +3,16 @@ import type { PublicGame, PublicPlayer, RoundResult } from "./types";
 export interface GameStateResponse {
   game: PublicGame;
   players: PublicPlayer[];
-  currentQuestion: { id: string; index: number; text: string; options: string[] } | null;
+  currentQuestion: {
+    id: string;
+    index: number;
+    text: string;
+    options: string[];
+    image_url: string | null;
+  } | null;
   totalQuestions: number;
   answeredCount: number;
+  answeredPlayerIds: string[];
   roundResult: RoundResult | null;
 }
 

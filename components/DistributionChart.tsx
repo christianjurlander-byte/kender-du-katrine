@@ -14,7 +14,7 @@ export function DistributionChart({
   const total = distribution.reduce((sum, n) => sum + n, 0) || 1;
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 w-full">
       {options.map((option, i) => {
         const count = distribution[i] ?? 0;
         const pct = Math.round((count / total) * 100);

@@ -1,24 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "./Button";
 
 export interface EditableQuestion {
   index: number;
   text: string;
   options: string[];
+  image_url?: string | null;
 }
 
 interface QuestionEditorProps {
   initialQuestions: EditableQuestion[];
   onSave: (questions: EditableQuestion[]) => Promise<void>;
+  onUploadImage: (questionIndex: number, file: File) => Promise<string>;
   onClose: () => void;
 }
 
-export function QuestionEditor({ initialQuestions, onSave, onClose }: QuestionEditorProps) {
+export function QuestionEditor({
+  initialQuestions,
+  onSave,
+  onUploadImage,
+  onClose,
+}: QuestionEditorProps) {
   const [questions, setQuestions] = useState<EditableQuestion[]>(initialQuestions);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
+  const fileInputs = useRef<Record<number, HTMLInputElement | null>>({});
 
   function updateText(index: number, text: string) {
     setQuestions((qs) => qs.map((q) => (q.index === index ? { ...q, text } : q)));
@@ -32,6 +41,26 @@ export function QuestionEditor({ initialQuestions, onSave, onClose }: QuestionEd
           : q
       )
     );
+  }
+
+  function removeImage(qIndex: number) {
+    setQuestions((qs) => qs.map((q) => (q.index === qIndex ? { ...q, image_url: null } : q)));
+  }
+
+  async function handleFileSelected(qIndex: number, file: File | undefined) {
+    if (!file) return;
+    setUploadingIndex(qIndex);
+    setError(null);
+    try {
+      const imageUrl = await onUploadImage(qIndex, file);
+      setQuestions((qs) =>
+        qs.map((q) => (q.index === qIndex ? { ...q, image_url: imageUrl } : q))
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Kunne ikke uploade billedet.");
+    } finally {
+      setUploadingIndex(null);
+    }
   }
 
   async function handleSave() {
@@ -77,6 +106,43 @@ export function QuestionEditor({ initialQuestions, onSave, onClose }: QuestionEd
                   placeholder={`Svarmulighed ${String.fromCharCode(65 + i)}`}
                 />
               ))}
+            </div>
+
+            <div className="flex flex-col gap-2">
+              {q.image_url ? (
+                <div className="flex items-center gap-3">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={q.image_url}
+                    alt=""
+                    className="rounded-lg object-cover"
+                    style={{ width: 64, height: 64 }}
+                  />
+                  <button
+                    className="btn btn-secondary !w-auto !min-h-0 !py-2 !px-3 !text-sm"
+                    onClick={() => removeImage(q.index)}
+                  >
+                    Fjern billede
+                  </button>
+                </div>
+              ) : (
+                <button
+                  className="btn btn-secondary !w-auto !min-h-0 !py-2 !px-3 !text-sm"
+                  disabled={uploadingIndex === q.index}
+                  onClick={() => fileInputs.current[q.index]?.click()}
+                >
+                  {uploadingIndex === q.index ? "Uploader..." : "🖼️ Tilføj billede"}
+                </button>
+              )}
+              <input
+                ref={(el) => {
+                  fileInputs.current[q.index] = el;
+                }}
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/gif"
+                className="hidden"
+                onChange={(e) => handleFileSelected(q.index, e.target.files?.[0])}
+              />
             </div>
           </div>
         ))}

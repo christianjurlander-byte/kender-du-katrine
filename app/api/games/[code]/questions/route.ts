@@ -15,7 +15,7 @@ async function handleGet(
   const supabase = getSupabaseServerClient();
   const { data, error } = await supabase
     .from("questions")
-    .select("id, index, text, options")
+    .select("id, index, text, options, image_url")
     .eq("game_id", game.id)
     .order("index", { ascending: true });
   if (error) return jsonError(error.message, 500);
@@ -29,6 +29,7 @@ interface QuestionInput {
   index: number;
   text: string;
   options: string[];
+  image_url?: string | null;
 }
 
 /** Host-only: replace question text/options. Only allowed before the game starts. */
@@ -61,6 +62,9 @@ async function handlePatch(
     if (q.options.some((o) => typeof o !== "string" || !o.trim())) {
       return jsonError("Svarmuligheder må ikke være tomme.", 400);
     }
+    if (q.image_url !== undefined && q.image_url !== null && typeof q.image_url !== "string") {
+      return jsonError("Ugyldig billed-URL.", 400);
+    }
   }
 
   const supabase = getSupabaseServerClient();
@@ -70,6 +74,7 @@ async function handlePatch(
       index: q.index,
       text: q.text.trim(),
       options: q.options.map((o) => o.trim()),
+      image_url: q.image_url ?? null,
     })),
     { onConflict: "game_id,index" }
   );

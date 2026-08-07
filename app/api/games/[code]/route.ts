@@ -28,10 +28,12 @@ async function handleGet(
   if (playersError) return jsonError(playersError.message, 500);
   const players = (playersData ?? []) as Player[];
 
-  let currentQuestion: Pick<Question, "id" | "index" | "text" | "options"> | null = null;
+  let currentQuestion: Pick<Question, "id" | "index" | "text" | "options" | "image_url"> | null =
+    null;
   let totalQuestions = 0;
   let roundResult: ReturnType<typeof computeRoundResults> | null = null;
   let answeredCount = 0;
+  let answeredPlayerIds: string[] = [];
 
   const { count } = await supabase
     .from("questions")
@@ -42,7 +44,7 @@ async function handleGet(
   if (game.status !== "lobby") {
     const { data: qData, error: qError } = await supabase
       .from("questions")
-      .select("id, index, text, options")
+      .select("id, index, text, options, image_url")
       .eq("game_id", game.id)
       .eq("index", game.current_question_index)
       .maybeSingle();
@@ -52,9 +54,10 @@ async function handleGet(
     if (currentQuestion) {
       const { data: receiptData } = await supabase
         .from("answer_receipts")
-        .select("player_id", { count: "exact" })
+        .select("player_id")
         .eq("question_id", currentQuestion.id);
-      answeredCount = receiptData?.length ?? 0;
+      answeredPlayerIds = (receiptData ?? []).map((r) => r.player_id as string);
+      answeredCount = answeredPlayerIds.length;
 
       if (game.question_state === "revealed") {
         const { data: answersData, error: answersError } = await supabase
@@ -68,7 +71,8 @@ async function handleGet(
           (answersData ?? []) as Answer[],
           players,
           game.katrine_player_id,
-          currentQuestion.options.length
+          currentQuestion.options.length,
+          game.question_started_at
         );
       }
     }
@@ -80,6 +84,7 @@ async function handleGet(
     currentQuestion,
     totalQuestions,
     answeredCount,
+    answeredPlayerIds,
     roundResult,
   });
 }

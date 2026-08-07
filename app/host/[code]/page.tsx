@@ -5,13 +5,16 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useGameRealtime } from "@/hooks/useGameRealtime";
 import { getHostToken } from "@/lib/storage";
-import { hostFetch } from "@/lib/hostApi";
+import { hostFetch, hostUploadFile } from "@/lib/hostApi";
 import { Button } from "@/components/Button";
 import { PlayerList } from "@/components/PlayerList";
 import { DistributionChart } from "@/components/DistributionChart";
 import { Leaderboard } from "@/components/Leaderboard";
 import { ErrorBanner, GameCodeBadge, Spinner } from "@/components/Misc";
 import { QuestionEditor, type EditableQuestion } from "@/components/QuestionEditor";
+import { CountdownRing } from "@/components/CountdownRing";
+import { Confetti } from "@/components/Confetti";
+import { playTadaChime } from "@/lib/sound";
 
 export default function HostGamePage() {
   const params = useParams<{ code: string }>();
@@ -66,6 +69,12 @@ export default function HostGamePage() {
     });
   }
 
+  async function uploadQuestionImage(_questionIndex: number, file: File) {
+    if (!hostToken) throw new Error("Mangler værtsadgang.");
+    const { imageUrl } = await hostUploadFile(`/api/games/${code}/upload-image`, hostToken, file);
+    return imageUrl;
+  }
+
   if (!tokenChecked || loading || !state) {
     return (
       <main className="flex-1 flex flex-col items-center justify-center px-6">
@@ -87,6 +96,79 @@ export default function HostGamePage() {
 
   const { game, players, currentQuestion, roundResult, answeredCount, totalQuestions } = state;
   const katrineChosen = players.some((p) => p.is_katrine);
+  const revealed = game.question_state === "revealed" && !!currentQuestion;
+
+  return (
+    <HostGameView
+      code={code}
+      hostToken={hostToken}
+      game={game}
+      players={players}
+      currentQuestion={currentQuestion}
+      roundResult={roundResult}
+      answeredCount={answeredCount}
+      totalQuestions={totalQuestions}
+      katrineChosen={katrineChosen}
+      revealed={revealed}
+      busy={busy}
+      actionError={actionError}
+      runAction={runAction}
+      openQuestionEditor={openQuestionEditor}
+      editingQuestions={editingQuestions}
+      questions={questions}
+      saveQuestions={saveQuestions}
+      uploadQuestionImage={uploadQuestionImage}
+      closeEditor={() => setEditingQuestions(false)}
+    />
+  );
+}
+
+interface HostGameViewProps {
+  code: string;
+  hostToken: string;
+  game: NonNullable<ReturnType<typeof useGameRealtime>["state"]>["game"];
+  players: NonNullable<ReturnType<typeof useGameRealtime>["state"]>["players"];
+  currentQuestion: NonNullable<ReturnType<typeof useGameRealtime>["state"]>["currentQuestion"];
+  roundResult: NonNullable<ReturnType<typeof useGameRealtime>["state"]>["roundResult"];
+  answeredCount: number;
+  totalQuestions: number;
+  katrineChosen: boolean;
+  revealed: boolean;
+  busy: boolean;
+  actionError: string | null;
+  runAction: (fn: () => Promise<unknown>) => Promise<void>;
+  openQuestionEditor: () => Promise<void>;
+  editingQuestions: boolean;
+  questions: EditableQuestion[];
+  saveQuestions: (updated: EditableQuestion[]) => Promise<void>;
+  uploadQuestionImage: (questionIndex: number, file: File) => Promise<string>;
+  closeEditor: () => void;
+}
+
+function HostGameView({
+  code,
+  hostToken,
+  game,
+  players,
+  currentQuestion,
+  roundResult,
+  answeredCount,
+  totalQuestions,
+  katrineChosen,
+  revealed,
+  busy,
+  actionError,
+  runAction,
+  openQuestionEditor,
+  editingQuestions,
+  questions,
+  saveQuestions,
+  uploadQuestionImage,
+  closeEditor,
+}: HostGameViewProps) {
+  useEffect(() => {
+    if (revealed) playTadaChime();
+  }, [revealed, currentQuestion?.id]);
 
   return (
     <main className="flex-1 flex flex-col items-center gap-6 px-4 py-8 w-full max-w-md mx-auto">
@@ -98,6 +180,13 @@ export default function HostGamePage() {
         <p className="text-sm" style={{ color: "var(--muted)" }}>
           Spillerne skriver koden på kenderdukatrine.vercel.app/join
         </p>
+        <Link
+          href={`/host/${code}/screen`}
+          target="_blank"
+          className="btn btn-secondary !w-auto !min-h-0 !py-2 !px-4 !text-sm mx-auto mt-1"
+        >
+          📺 Åbn fælles skærm
+        </Link>
       </header>
 
       {game.status === "lobby" && (
@@ -142,9 +231,19 @@ export default function HostGamePage() {
             Spørgsmål {currentQuestion.index + 1} af {totalQuestions}
           </p>
           <h2 className="text-xl font-bold text-center">{currentQuestion.text}</h2>
+          {currentQuestion.image_url && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={currentQuestion.image_url}
+              alt=""
+              className="w-full rounded-2xl object-cover"
+              style={{ maxHeight: 220 }}
+            />
+          )}
 
           {game.question_state === "answering" && (
             <>
+              <CountdownRing startedAt={game.question_started_at} />
               <p className="text-center font-semibold">
                 {answeredCount} af {players.length} har svaret
               </p>
@@ -202,9 +301,12 @@ export default function HostGamePage() {
         <QuestionEditor
           initialQuestions={questions}
           onSave={saveQuestions}
-          onClose={() => setEditingQuestions(false)}
+          onUploadImage={uploadQuestionImage}
+          onClose={closeEditor}
         />
       )}
+
+      {revealed && <Confetti burstKey={currentQuestion!.id} />}
     </main>
   );
 }

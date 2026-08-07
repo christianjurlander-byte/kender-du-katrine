@@ -10,6 +10,7 @@ export interface Game {
   katrine_player_id: string | null;
   host_token: string;
   created_at: string;
+  question_started_at: string | null;
 }
 
 export interface Player {
@@ -21,6 +22,7 @@ export interface Player {
   connected: boolean;
   player_token: string;
   created_at: string;
+  avatar: string | null;
 }
 
 export interface Question {
@@ -29,6 +31,7 @@ export interface Question {
   index: number;
   text: string;
   options: string[];
+  image_url: string | null;
 }
 
 export interface Answer {
@@ -50,4 +53,13 @@ export interface RoundResult {
   totalAnswers: number;
   pointsAwarded: Record<string, number>; // playerId -> points gained this round
   katrinePlayerId: string | null;
+  /** Player (excluding Katrine) who matched her answer fastest, if any. */
+  fastestCorrectPlayerId: string | null;
+  fastestCorrectMs: number | null;
+}
+
+export interface Award {
+  emoji: string;
+  title: string;
+  playerName: string;
 }

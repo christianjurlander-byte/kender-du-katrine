@@ -11,7 +11,7 @@ export function Leaderboard({ players, highlightPlayerId }: LeaderboardProps) {
     .sort((a, b) => b.score - a.score);
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 w-full">
       {sorted.map((player, i) => (
         <div
           key={player.id}
@@ -26,6 +26,7 @@ export function Leaderboard({ players, highlightPlayerId }: LeaderboardProps) {
             <span className="w-7 text-center font-bold" style={{ color: "var(--muted)" }}>
               {i + 1}
             </span>
+            {player.avatar && <span aria-hidden>{player.avatar}</span>}
             <span className="font-semibold">{player.name}</span>
             {!player.connected && (
               <span className="badge" style={{ background: "#f3f4f6", color: "#6b7280" }}>

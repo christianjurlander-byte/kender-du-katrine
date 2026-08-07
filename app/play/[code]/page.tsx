@@ -9,6 +9,7 @@ import { DistributionChart } from "@/components/DistributionChart";
 import { Leaderboard } from "@/components/Leaderboard";
 import { PlayerList } from "@/components/PlayerList";
 import { ErrorBanner, GameCodeBadge, Spinner } from "@/components/Misc";
+import { CountdownRing } from "@/components/CountdownRing";
 
 export default function PlayPage() {
   const params = useParams<{ code: string }>();
@@ -102,6 +103,7 @@ export default function PlayPage() {
             Spil {code}
           </p>
           <p className="font-bold">
+            {myPlayer?.avatar && <span aria-hidden>{myPlayer.avatar} </span>}
             {myPlayer?.name ?? session?.name}
             {myPlayer?.is_katrine && " 👑"}
           </p>
@@ -132,9 +134,19 @@ export default function PlayPage() {
             Spørgsmål {state.currentQuestion.index + 1} af {state.totalQuestions}
           </p>
           <h2 className="text-xl font-bold text-center">{state.currentQuestion.text}</h2>
+          {state.currentQuestion.image_url && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={state.currentQuestion.image_url}
+              alt=""
+              className="w-full rounded-2xl object-cover"
+              style={{ maxHeight: 220 }}
+            />
+          )}
 
           {state.game.question_state === "answering" && (
             <>
+              <CountdownRing startedAt={state.game.question_started_at} />
               <AnswerOptions
                 options={state.currentQuestion.options}
                 selectedIndex={selectedOption}

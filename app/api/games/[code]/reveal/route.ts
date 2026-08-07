@@ -51,7 +51,8 @@ async function handlePost(
     answers,
     players,
     game.katrine_player_id,
-    question.options.length
+    question.options.length,
+    game.question_started_at
   );
 
   const newScores = applyPointsToScores(players, result.pointsAwarded);

@@ -30,7 +30,12 @@ async function handlePost(
 
   const { error } = await supabase
     .from("games")
-    .update({ status: "active", current_question_index: 0, question_state: "answering" })
+    .update({
+      status: "active",
+      current_question_index: 0,
+      question_state: "answering",
+      question_started_at: new Date().toISOString(),
+    })
     .eq("id", game.id);
   if (error) return jsonError(error.message, 500);
 

@@ -23,8 +23,13 @@ create table if not exists public.games (
   current_question_index int not null default 0,
   katrine_player_id uuid,
   host_token text not null default encode(gen_random_bytes(16), 'hex'),
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  -- When the current question was opened for answering. Used to compute
+  -- the (purely visual) countdown ring and "fastest answer" fun facts.
+  question_started_at timestamptz
 );
+
+alter table public.games add column if not exists question_started_at timestamptz;
 
 create table if not exists public.players (
   id uuid primary key default gen_random_uuid(),
@@ -34,8 +39,12 @@ create table if not exists public.players (
   score int not null default 0,
   connected boolean not null default true,
   player_token text not null default encode(gen_random_bytes(16), 'hex'),
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  -- A single emoji the player picked when joining. Purely cosmetic.
+  avatar text
 );
+
+alter table public.players add column if not exists avatar text;
 
 -- Only one Katrine per game.
 create unique index if not exists one_katrine_per_game
@@ -54,8 +63,14 @@ create table if not exists public.questions (
   index int not null,
   text text not null,
   options jsonb not null,
+  -- Optional image shown alongside the question, on both players' phones
+  -- and the shared screen. Points at a file in the "question-images"
+  -- storage bucket (see below).
+  image_url text,
   unique (game_id, index)
 );
+
+alter table public.questions add column if not exists image_url text;
 
 create table if not exists public.answers (
   id uuid primary key default gen_random_uuid(),
@@ -132,6 +147,18 @@ create policy "answers are readable only once revealed"
         and g.current_question_index = q.index
     )
   );
+
+-- -----------------------------------------------------------------------------
+-- Storage: a public bucket for question images. Uploads happen through this
+-- app's server-side API route (service role key), so no anon write policy
+-- is needed — the bucket's "public" flag alone makes uploaded images
+-- viewable by anyone with the link, same trust level as the rest of the
+-- game data in this party-game app.
+-- -----------------------------------------------------------------------------
+
+insert into storage.buckets (id, name, public)
+values ('question-images', 'question-images', true)
+on conflict (id) do update set public = true;
 
 -- -----------------------------------------------------------------------------
 -- Realtime: let the browser subscribe to live changes.

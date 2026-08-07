@@ -28,6 +28,7 @@ export function PlayerList({ players, onSelectKatrine, selectable }: PlayerListP
               style={{ background: player.connected ? "#22c55e" : "#d1d5db" }}
               aria-hidden
             />
+            {player.avatar && <span aria-hidden>{player.avatar}</span>}
             <span className="font-semibold">{player.name}</span>
             {player.is_katrine && <span className="badge badge-katrine">👑 Katrine</span>}
           </div>

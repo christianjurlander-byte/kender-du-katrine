@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseServerClient } from "@/lib/supabaseServer";
 import { getGameByCode, jsonError, withApiErrorHandling } from "@/lib/apiHelpers";
 import { toPublicPlayer } from "@/lib/sanitize";
+import { isValidAvatar, AVATAR_OPTIONS } from "@/lib/avatars";
 import type { Player } from "@/lib/types";
 
 async function handlePost(
@@ -20,6 +21,8 @@ async function handlePost(
   if (!name) return jsonError("Indtast et navn.", 400);
   if (name.length > 30) return jsonError("Navnet er for langt (max 30 tegn).", 400);
 
+  const avatar = isValidAvatar(body?.avatar) ? body.avatar : AVATAR_OPTIONS[0];
+
   const supabase = getSupabaseServerClient();
 
   const { data: existing } = await supabase
@@ -34,7 +37,7 @@ async function handlePost(
 
   const { data, error } = await supabase
     .from("players")
-    .insert({ game_id: game.id, name })
+    .insert({ game_id: game.id, name, avatar })
     .select("*")
     .maybeSingle();
   if (error) return jsonError(error.message, 500);

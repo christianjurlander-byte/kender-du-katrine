@@ -4,8 +4,10 @@ import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/Button";
 import { ErrorBanner } from "@/components/Misc";
+import { AvatarPicker } from "@/components/AvatarPicker";
 import { normalizeGameCode, isValidGameCode } from "@/lib/gameCode";
 import { savePlayerSession } from "@/lib/storage";
+import { AVATAR_OPTIONS } from "@/lib/avatars";
 
 export default function JoinPage() {
   return (
@@ -20,6 +22,7 @@ function JoinForm() {
   const searchParams = useSearchParams();
   const [code, setCode] = useState(() => normalizeGameCode(searchParams.get("code") ?? ""));
   const [name, setName] = useState("");
+  const [avatar, setAvatar] = useState<string>(AVATAR_OPTIONS[0]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -43,7 +46,7 @@ function JoinForm() {
       const res = await fetch(`/api/games/${cleanCode}/join`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: cleanName }),
+        body: JSON.stringify({ name: cleanName, avatar }),
       });
       const data = await res.json().catch(() => null);
       if (!res.ok || !data) {
@@ -85,6 +88,7 @@ function JoinForm() {
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
+        <AvatarPicker value={avatar} onChange={setAvatar} />
         <Button type="submit" disabled={loading}>
           {loading ? "Tilslutter..." : "Deltag 🎉"}
         </Button>

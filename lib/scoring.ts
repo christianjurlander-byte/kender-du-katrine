@@ -15,7 +15,8 @@ export function computeRoundResults(
   answers: Answer[],
   players: Pick<Player, "id">[],
   katrinePlayerId: string | null,
-  optionCount: number
+  optionCount: number,
+  questionStartedAt: string | null = null
 ): RoundResult {
   const distribution = new Array(optionCount).fill(0) as number[];
   const pointsAwarded: Record<string, number> = {};
@@ -32,11 +33,24 @@ export function computeRoundResults(
     }
   }
 
+  let fastestCorrectPlayerId: string | null = null;
+  let fastestCorrectMs: number | null = null;
+
   if (correctOptionIndex !== null) {
+    const startMs = questionStartedAt ? new Date(questionStartedAt).getTime() : null;
+
     for (const answer of answers) {
       if (answer.player_id === katrinePlayerId) continue;
       if (answer.option_index === correctOptionIndex) {
         pointsAwarded[answer.player_id] = 1;
+
+        if (startMs !== null) {
+          const elapsedMs = new Date(answer.created_at).getTime() - startMs;
+          if (elapsedMs >= 0 && (fastestCorrectMs === null || elapsedMs < fastestCorrectMs)) {
+            fastestCorrectMs = elapsedMs;
+            fastestCorrectPlayerId = answer.player_id;
+          }
+        }
       }
     }
   }
@@ -48,6 +62,8 @@ export function computeRoundResults(
     totalAnswers: answers.length,
     pointsAwarded,
     katrinePlayerId: katrinePlayerId ?? null,
+    fastestCorrectPlayerId,
+    fastestCorrectMs,
   };
 }
 
