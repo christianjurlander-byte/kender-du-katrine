@@ -14,6 +14,7 @@ import { LobbyCountdown } from "@/components/LobbyCountdown";
 import { TeaserGallery } from "@/components/TeaserGallery";
 import { LobbyVibeMessage } from "@/components/LobbyVibeMessage";
 import { useLobbyVibe } from "@/hooks/useLobbyVibe";
+import { Badge18 } from "@/components/Badge18";
 
 export default function PlayPage() {
   const params = useParams<{ code: string }>();
@@ -126,6 +127,9 @@ export default function PlayPage() {
 
       {state.game.status === "lobby" && (
         <div className="w-full flex flex-col gap-4">
+          <div className="flex justify-center">
+            <Badge18 />
+          </div>
           <div className="card text-center">
             <p className="font-semibold">Venter på at værten starter spillet...</p>
           </div>

@@ -15,6 +15,7 @@ import { LobbyCountdown } from "@/components/LobbyCountdown";
 import { TeaserGallery } from "@/components/TeaserGallery";
 import { LobbyVibeMessage } from "@/components/LobbyVibeMessage";
 import { useLobbyVibe } from "@/hooks/useLobbyVibe";
+import { Badge18 } from "@/components/Badge18";
 import { pickHighlightFacts } from "@/lib/insights";
 import { playTadaChime } from "@/lib/sound";
 
@@ -67,9 +68,10 @@ export default function SharedScreenPage() {
     <main className="flex-1 flex flex-col items-center justify-center gap-8 px-10 py-10 w-full max-w-5xl mx-auto text-center">
       {game.status === "lobby" && (
         <div className="flex flex-col items-center gap-8 w-full">
-          <div>
+          <div className="flex flex-col items-center gap-3">
             <span className="text-6xl">🎉</span>
             <h1 className="text-5xl font-black mt-2">Kender du Katrine?</h1>
+            <Badge18 large />
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-10">

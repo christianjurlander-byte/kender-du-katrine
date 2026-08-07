@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/Button";
 import { ErrorBanner } from "@/components/Misc";
 import { AvatarPicker } from "@/components/AvatarPicker";
+import { Badge18 } from "@/components/Badge18";
 import { normalizeGameCode, isValidGameCode } from "@/lib/gameCode";
 import { savePlayerSession } from "@/lib/storage";
 import { AVATAR_OPTIONS } from "@/lib/avatars";
@@ -88,9 +89,10 @@ function JoinForm() {
 
   return (
     <main className="flex-1 flex flex-col items-center justify-center gap-6 px-6 py-12">
-      <div className="text-center flex flex-col gap-2">
+      <div className="text-center flex flex-col gap-2 items-center">
         <span className="text-5xl">📱</span>
         <h1 className="text-2xl font-black">Deltag i spillet</h1>
+        <Badge18 />
         <p style={{ color: "var(--muted)" }}>Spørg værten om koden til spillet.</p>
       </div>
 

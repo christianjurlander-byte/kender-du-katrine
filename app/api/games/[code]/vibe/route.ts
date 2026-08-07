@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
-import { withApiErrorHandling } from "@/lib/apiHelpers";
-import { LOBBY_VIBE_PROMPT, pickRandomFallback } from "@/lib/lobbyVibes";
+import { getGameByCode, withApiErrorHandling } from "@/lib/apiHelpers";
+import { buildLobbyVibePrompt, pickRandomFallback } from "@/lib/lobbyVibes";
 
 /**
  * Public: a short, fun rotating message for the lobby. Uses Claude if
@@ -9,19 +9,24 @@ import { LOBBY_VIBE_PROMPT, pickRandomFallback } from "@/lib/lobbyVibes";
  * back to a fixed list of pre-written messages — this endpoint must never
  * be the reason the lobby breaks.
  */
-async function handleGet() {
+async function handleGet(
+  _req: NextRequest,
+  { params }: { params: Promise<{ code: string }> }
+) {
+  const { code } = await params;
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     return NextResponse.json({ message: pickRandomFallback(), source: "fallback" });
   }
 
   try {
+    const game = await getGameByCode(code);
     const client = new Anthropic({ apiKey });
     const response = await client.messages.create({
       model: "claude-opus-5",
       max_tokens: 120,
       output_config: { effort: "low" },
-      messages: [{ role: "user", content: LOBBY_VIBE_PROMPT }],
+      messages: [{ role: "user", content: buildLobbyVibePrompt(game?.katrine_facts) }],
     });
 
     if (response.stop_reason === "refusal") {

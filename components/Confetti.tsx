@@ -18,7 +18,7 @@ interface Particle {
   rotationSpeed: number;
 }
 
-const COLORS = ["#7c3aed", "#ec4899", "#fbbf24", "#22c55e", "#38bdf8"];
+const COLORS = ["#7c3aed", "#ec4899", "#fbbf24", "#ffd166", "#22c55e", "#38bdf8", "#ffffff"];
 
 /** A short, festive confetti burst rendered on a full-screen canvas overlay. */
 export function Confetti({ burstKey }: ConfettiProps) {
@@ -41,7 +41,7 @@ export function Confetti({ burstKey }: ConfettiProps) {
     resize();
     window.addEventListener("resize", resize);
 
-    const particles: Particle[] = Array.from({ length: 140 }, () => ({
+    const particles: Particle[] = Array.from({ length: 190 }, () => ({
       x: window.innerWidth / 2 + (Math.random() - 0.5) * 200,
       y: window.innerHeight * 0.35,
       vx: (Math.random() - 0.5) * 8,

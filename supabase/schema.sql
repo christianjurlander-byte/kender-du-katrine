@@ -32,12 +32,16 @@ create table if not exists public.games (
   -- host still has to press "Start spil" manually when ready.
   scheduled_start_at timestamptz,
   -- Optional teaser photos of Katrine shown while people wait in the lobby.
-  teaser_image_urls jsonb not null default '[]'::jsonb
+  teaser_image_urls jsonb not null default '[]'::jsonb,
+  -- Optional fun/personal facts about Katrine the host can write, used to
+  -- personalize the AI-generated lobby messages (see /api/games/[code]/vibe).
+  katrine_facts text not null default ''
 );
 
 alter table public.games add column if not exists question_started_at timestamptz;
 alter table public.games add column if not exists scheduled_start_at timestamptz;
 alter table public.games add column if not exists teaser_image_urls jsonb not null default '[]'::jsonb;
+alter table public.games add column if not exists katrine_facts text not null default '';
 
 create table if not exists public.players (
   id uuid primary key default gen_random_uuid(),

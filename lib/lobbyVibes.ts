@@ -22,11 +22,24 @@ export function pickRandomFallback(): string {
   return FALLBACK_LOBBY_MESSAGES[Math.floor(Math.random() * FALLBACK_LOBBY_MESSAGES.length)];
 }
 
-export const LOBBY_VIBE_PROMPT = `Skriv ÉN kort, sjov og hypende sætning på dansk til gæster, der venter i en lobby før en fest-quiz kaldet "Kender du Katrine?". Quizzen handler om at gætte, hvad en bestemt person (Katrine) ville svare på forskellige spørgsmål.
+/**
+ * Builds the prompt sent to Claude for a lobby hype-message. If the host
+ * has written personal/fun facts about Katrine (via the lobby settings
+ * panel), they're included so the AI can weave in something specific
+ * instead of staying generic.
+ */
+export function buildLobbyVibePrompt(katrineFacts?: string): string {
+  const factsBlock =
+    katrineFacts && katrineFacts.trim()
+      ? `\n\nHer er nogle sjove/personlige detaljer om Katrine, skrevet af værten. Brug dem løst og kreativt til at gøre sætningen mere personlig og sjov — du behøver ikke bruge dem alle på én gang:\n${katrineFacts.trim()}`
+      : "";
+
+  return `Skriv ÉN kort, sjov og hypende sætning på dansk til gæster, der venter i en lobby før en fest-quiz kaldet "Kender du Katrine?", afholdt i anledning af Katrines 18-års fødselsdag. Quizzen handler om at gætte, hvad Katrine ville svare på forskellige spørgsmål.
 
 Regler:
 - Maks 1-2 korte sætninger.
 - Legende, varm og opstemt tone — som en hyggelig værtinde, ikke en reklame.
-- Må gerne nævne Katrine, ventetiden, eller stemningen til festen.
+- Må gerne nævne Katrine, fødselsdagen, ventetiden, eller stemningen til festen.
 - Ingen emojis er påkrævet, men du må gerne bruge 1 hvis det passer naturligt.
-- Svar KUN med selve sætningen, ingen anførselstegn, ingen forklaring.`;
+- Svar KUN med selve sætningen, ingen anførselstegn, ingen forklaring.${factsBlock}`;
+}

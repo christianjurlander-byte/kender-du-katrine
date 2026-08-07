@@ -16,6 +16,7 @@ import { CountdownRing } from "@/components/CountdownRing";
 import { Confetti } from "@/components/Confetti";
 import { CopyLinkButton } from "@/components/CopyLinkButton";
 import { LobbySettingsPanel } from "@/components/LobbySettingsPanel";
+import { Badge18 } from "@/components/Badge18";
 import { playTadaChime } from "@/lib/sound";
 
 export default function HostGamePage() {
@@ -178,6 +179,9 @@ function HostGameView({
         <p className="text-sm font-bold" style={{ color: "var(--muted)" }}>
           VÆRT
         </p>
+        <div className="flex justify-center">
+          <Badge18 />
+        </div>
         <GameCodeBadge code={code} />
         <p className="text-sm" style={{ color: "var(--muted)" }}>
           Spillerne skriver koden på kenderdukatrine.vercel.app/join
@@ -221,6 +225,7 @@ function HostGameView({
             hostToken={hostToken}
             scheduledStartAt={game.scheduled_start_at}
             teaserImageUrls={game.teaser_image_urls}
+            katrineFacts={game.katrine_facts}
           />
 
           <Button

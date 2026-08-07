@@ -13,6 +13,7 @@ export interface Game {
   question_started_at: string | null;
   scheduled_start_at: string | null;
   teaser_image_urls: string[];
+  katrine_facts: string;
 }
 
 export interface Player {

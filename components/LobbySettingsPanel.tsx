@@ -9,6 +9,7 @@ interface LobbySettingsPanelProps {
   hostToken: string;
   scheduledStartAt: string | null;
   teaserImageUrls: string[];
+  katrineFacts: string;
 }
 
 /** Converts an ISO string to the value a <input type="datetime-local"> expects, in local time. */
@@ -24,13 +25,31 @@ export function LobbySettingsPanel({
   hostToken,
   scheduledStartAt,
   teaserImageUrls,
+  katrineFacts,
 }: LobbySettingsPanelProps) {
   const [open, setOpen] = useState(false);
   const [datetimeValue, setDatetimeValue] = useState(() => toDatetimeLocalValue(scheduledStartAt));
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [factsValue, setFactsValue] = useState(katrineFacts);
+  const [savingFacts, setSavingFacts] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
+
+  async function saveKatrineFacts() {
+    setSavingFacts(true);
+    setError(null);
+    try {
+      await hostFetch(`/api/games/${code}/lobby-settings`, hostToken, {
+        method: "PATCH",
+        body: { katrineFacts: factsValue },
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Kunne ikke gemme fakta om Katrine.");
+    } finally {
+      setSavingFacts(false);
+    }
+  }
 
   async function saveScheduledStart() {
     setSaving(true);
@@ -175,6 +194,27 @@ export function LobbySettingsPanel({
           className="hidden"
           onChange={(e) => addTeaserImage(e.target.files?.[0])}
         />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label className="text-sm font-bold" style={{ color: "var(--muted)" }}>
+          Sjove fakta om Katrine (til AI-beskederne)
+        </label>
+        <textarea
+          className="input !text-left !min-h-0"
+          style={{ height: 90, resize: "vertical", paddingTop: "0.75rem" }}
+          maxLength={600}
+          placeholder="Fx: elsker cocktails, danser altid til ABBA, kan ikke lide agurker, blev 18 i dag..."
+          value={factsValue}
+          onChange={(e) => setFactsValue(e.target.value)}
+        />
+        <Button onClick={saveKatrineFacts} disabled={savingFacts}>
+          {savingFacts ? "Gemmer..." : "Gem fakta"}
+        </Button>
+        <p className="text-xs" style={{ color: "var(--muted)" }}>
+          Bruges af AI&apos;en til at gøre de sjove lobby-beskeder mere personlige. Kun synligt her —
+          vises ikke direkte for gæsterne.
+        </p>
       </div>
 
       {error && (

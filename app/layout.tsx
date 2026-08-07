@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { PartyDecorations } from "@/components/PartyDecorations";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Kender du Katrine?",
-  description: "En live fest-quiz — hvor godt kender I egentlig Katrine?",
+  description: "En live fest-quiz til Katrines 18-års fødselsdag — hvor godt kender I hende?",
 };
 
 export const viewport: Viewport = {
@@ -30,7 +31,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="da"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col party-background">{children}</body>
+      <body className="min-h-full flex flex-col party-background">
+        <PartyDecorations />
+        {children}
+      </body>
     </html>
   );
 }

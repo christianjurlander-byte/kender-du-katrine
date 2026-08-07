@@ -3,6 +3,7 @@ import { getSupabaseServerClient } from "@/lib/supabaseServer";
 import { requireHost, jsonError, withApiErrorHandling } from "@/lib/apiHelpers";
 
 const MAX_TEASER_IMAGES = 8;
+const MAX_KATRINE_FACTS_LENGTH = 600;
 
 /**
  * Host-only: sets the hype-building "quiz starts at" countdown target and
@@ -46,6 +47,14 @@ async function handlePatch(
       return jsonError(`Ugyldig billedliste (max ${MAX_TEASER_IMAGES} billeder).`, 400);
     }
     update.teaser_image_urls = value;
+  }
+
+  if ("katrineFacts" in (body ?? {})) {
+    const value = body.katrineFacts;
+    if (typeof value !== "string" || value.length > MAX_KATRINE_FACTS_LENGTH) {
+      return jsonError(`Fakta om Katrine må max være ${MAX_KATRINE_FACTS_LENGTH} tegn.`, 400);
+    }
+    update.katrine_facts = value.trim();
   }
 
   if (Object.keys(update).length === 0) {
