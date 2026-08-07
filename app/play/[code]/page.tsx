@@ -16,6 +16,8 @@ import { LobbyVibeMessage } from "@/components/LobbyVibeMessage";
 import { useLobbyVibe } from "@/hooks/useLobbyVibe";
 import { RoundVibeMessage } from "@/components/RoundVibeMessage";
 import { useRoundVibe } from "@/hooks/useRoundVibe";
+import { KatrineRecapCard } from "@/components/KatrineRecapCard";
+import { useKatrineRecap } from "@/hooks/useKatrineRecap";
 import { Badge18 } from "@/components/Badge18";
 
 export default function PlayPage() {
@@ -34,6 +36,7 @@ export default function PlayPage() {
   const { state, loading, error } = useGameRealtime(code);
   const lobbyVibe = useLobbyVibe(code, state?.game.status === "lobby");
   const roundVibe = useRoundVibe(code, state?.currentQuestion?.id, state?.game.question_state === "revealed");
+  const katrineRecap = useKatrineRecap(code, state?.game.status === "finished");
 
   // Reset local answer state whenever the current question changes, using
   // the React-recommended "adjust state while rendering" pattern instead of
@@ -208,9 +211,16 @@ export default function PlayPage() {
       {state.game.status === "finished" && (
         <div className="w-full flex flex-col gap-4">
           <div className="card text-center">
-            <p className="text-2xl">🏆</p>
-            <p className="font-bold text-lg">Spillet er slut!</p>
+            <p className="text-2xl">🎂</p>
+            <p className="font-bold text-lg">
+              Tillykke med de 18 år, {state.players.find((p) => p.is_katrine)?.name ?? "Katrine"}!
+            </p>
           </div>
+          <KatrineRecapCard
+            message={katrineRecap}
+            katrineName={state.players.find((p) => p.is_katrine)?.name}
+          />
+          <p className="font-bold text-center mt-2">🏆 Stillingen</p>
           <Leaderboard players={state.players} highlightPlayerId={myPlayer?.id} />
         </div>
       )}

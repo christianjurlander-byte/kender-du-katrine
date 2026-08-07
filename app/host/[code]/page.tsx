@@ -19,6 +19,8 @@ import { LobbySettingsPanel } from "@/components/LobbySettingsPanel";
 import { Badge18 } from "@/components/Badge18";
 import { RoundVibeMessage } from "@/components/RoundVibeMessage";
 import { useRoundVibe } from "@/hooks/useRoundVibe";
+import { KatrineRecapCard } from "@/components/KatrineRecapCard";
+import { useKatrineRecap } from "@/hooks/useKatrineRecap";
 import { playTadaChime } from "@/lib/sound";
 
 export default function HostGamePage() {
@@ -34,6 +36,7 @@ export default function HostGamePage() {
 
   const { state, loading, error } = useGameRealtime(code);
   const roundVibe = useRoundVibe(code, state?.currentQuestion?.id, state?.game.question_state === "revealed");
+  const katrineRecap = useKatrineRecap(code, state?.game.status === "finished");
 
   useEffect(() => {
     // Reading localStorage is a sync with an external system that only
@@ -117,6 +120,7 @@ export default function HostGamePage() {
       katrineChosen={katrineChosen}
       revealed={revealed}
       roundVibe={roundVibe}
+      katrineRecap={katrineRecap}
       busy={busy}
       actionError={actionError}
       runAction={runAction}
@@ -142,6 +146,7 @@ interface HostGameViewProps {
   katrineChosen: boolean;
   revealed: boolean;
   roundVibe: string | null;
+  katrineRecap: string | null;
   busy: boolean;
   actionError: string | null;
   runAction: (fn: () => Promise<unknown>) => Promise<void>;
@@ -165,6 +170,7 @@ function HostGameView({
   katrineChosen,
   revealed,
   roundVibe,
+  katrineRecap,
   busy,
   actionError,
   runAction,
@@ -309,9 +315,13 @@ function HostGameView({
       {game.status === "finished" && (
         <div className="w-full flex flex-col gap-4">
           <div className="card text-center">
-            <p className="text-2xl">🏆</p>
-            <p className="font-bold text-lg">Spillet er slut!</p>
+            <p className="text-2xl">🎂</p>
+            <p className="font-bold text-lg">
+              Tillykke med de 18 år, {players.find((p) => p.is_katrine)?.name ?? "Katrine"}!
+            </p>
           </div>
+          <KatrineRecapCard message={katrineRecap} katrineName={players.find((p) => p.is_katrine)?.name} />
+          <p className="font-bold text-center mt-2">🏆 Stillingen</p>
           <Leaderboard players={players} />
           <Link href="/host" className="btn btn-secondary">
             Opret et nyt spil

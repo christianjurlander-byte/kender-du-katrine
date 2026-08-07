@@ -17,6 +17,8 @@ import { LobbyVibeMessage } from "@/components/LobbyVibeMessage";
 import { useLobbyVibe } from "@/hooks/useLobbyVibe";
 import { RoundVibeMessage } from "@/components/RoundVibeMessage";
 import { useRoundVibe } from "@/hooks/useRoundVibe";
+import { KatrineRecapCard } from "@/components/KatrineRecapCard";
+import { useKatrineRecap } from "@/hooks/useKatrineRecap";
 import { Badge18 } from "@/components/Badge18";
 import { pickHighlightFacts } from "@/lib/insights";
 import { playTadaChime } from "@/lib/sound";
@@ -45,6 +47,7 @@ export default function SharedScreenPage() {
   const { insights, awards } = useInsights(code, refreshKey);
   const lobbyVibe = useLobbyVibe(code, state?.game.status === "lobby");
   const roundVibe = useRoundVibe(code, state?.currentQuestion?.id, state?.game.question_state === "revealed");
+  const katrineRecap = useKatrineRecap(code, state?.game.status === "finished");
 
   const revealed = !!state && state.game.question_state === "revealed" && !!state.currentQuestion;
 
@@ -66,6 +69,7 @@ export default function SharedScreenPage() {
   const joinUrl = origin ? `${origin}/join?code=${code}` : "";
   const playerNames = Object.fromEntries(players.map((p) => [p.id, p.name]));
   const highlightFacts = pickHighlightFacts(insights, playerNames);
+  const katrineName = players.find((p) => p.is_katrine)?.name;
 
   return (
     <main className="flex-1 flex flex-col items-center justify-center gap-8 px-10 py-10 w-full max-w-5xl mx-auto text-center">
@@ -182,8 +186,10 @@ export default function SharedScreenPage() {
 
       {game.status === "finished" && (
         <div className="flex flex-col items-center gap-6 w-full max-w-3xl">
-          <span className="text-6xl">🏆</span>
-          <h1 className="text-4xl font-black">Spillet er slut!</h1>
+          <span className="text-6xl">🎂</span>
+          <h1 className="text-4xl font-black">Tillykke med de 18 år, {katrineName ?? "Katrine"}!</h1>
+          <KatrineRecapCard message={katrineRecap} katrineName={katrineName} large />
+          <h2 className="text-2xl font-black mt-2">🏆 Stillingen</h2>
           <Leaderboard players={players} columns={players.length > 10 ? 2 : 1} />
 
           {awards && awards.length > 0 && (
