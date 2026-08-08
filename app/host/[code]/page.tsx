@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useGameRealtime } from "@/hooks/useGameRealtime";
-import { getHostToken } from "@/lib/storage";
+import { getHostToken, saveHostToken } from "@/lib/storage";
 import { hostFetch, hostUploadFile } from "@/lib/hostApi";
 import { Button } from "@/components/Button";
 import { PlayerList } from "@/components/PlayerList";
@@ -24,8 +24,18 @@ import { useKatrineRecap } from "@/hooks/useKatrineRecap";
 import { playTadaChime } from "@/lib/sound";
 
 export default function HostGamePage() {
+  return (
+    <Suspense fallback={null}>
+      <HostGamePageInner />
+    </Suspense>
+  );
+}
+
+function HostGamePageInner() {
   const params = useParams<{ code: string }>();
   const code = params.code;
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   const [hostToken, setHostToken] = useState<string | null>(null);
   const [tokenChecked, setTokenChecked] = useState(false);
@@ -39,13 +49,22 @@ export default function HostGamePage() {
   const katrineRecap = useKatrineRecap(code, state?.game.status === "finished");
 
   useEffect(() => {
-    // Reading localStorage is a sync with an external system that only
-    // exists in the browser, so this must happen after mount (avoids an
-    // SSR/CSR hydration mismatch from reading it during render).
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+    // Reading localStorage/URL params is a sync with an external system
+    // that only exists in the browser, so this must happen after mount
+    // (avoids an SSR/CSR hydration mismatch from reading it during render).
+    /* eslint-disable react-hooks/set-state-in-effect */
+    const tokenFromLink = searchParams.get("token");
+    if (tokenFromLink) {
+      saveHostToken(code, tokenFromLink);
+      setHostToken(tokenFromLink);
+      setTokenChecked(true);
+      router.replace(`/host/${code}`);
+      return;
+    }
     setHostToken(getHostToken(code));
     setTokenChecked(true);
-  }, [code]);
+    /* eslint-enable react-hooks/set-state-in-effect */
+  }, [code, searchParams, router]);
 
   async function runAction(fn: () => Promise<unknown>) {
     setBusy(true);
