@@ -91,8 +91,9 @@ export function QuestionEditor({
             <label className="text-sm font-bold" style={{ color: "var(--muted)" }}>
               Spørgsmål {q.index + 1}
             </label>
-            <input
-              className="input !text-left"
+            <textarea
+              className="input !text-left !min-h-0"
+              style={{ height: 72, resize: "vertical", paddingTop: "0.75rem" }}
               value={q.text}
               onChange={(e) => updateText(q.index, e.target.value)}
             />
